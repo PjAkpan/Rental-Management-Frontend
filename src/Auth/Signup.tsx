@@ -23,46 +23,6 @@ const Signup = () => {
   const navigate = useNavigate();
 
 
-
-  // const {
-  //   trigger: handleSignup,
-  //   isLoading,
-  //   data,
-  //   error,
-  // } = useFetcher({
-  //   queryFn: async () => {
-  //     try {
-  //       const response = await axios.post(
-  //         "http://127.0.0.1:5000/api/users/add",
-  //         {
-  //           email,
-  //           fullName,
-  //           password,
-  //           password2,
-  //           roomNumber,
-  //           phoneNumber,
-  //           deviceId,
-  //         },
-  //         {
-  //           headers: { "Content-Type": "application/json" },
-  //         }
-  //       );
-  //       return response.data; // Return response data if the request is successful
-  //     } catch (err) {
-  //       // Type assertion to tell TypeScript it's an Error object
-  //       const errorMessage = (err as any).response.data.message || "Signup failed";
-  //       throw new Error(errorMessage); // Throw error for `onError` to handle
-  //     }
-  //   },
-  //   onSuccess: () => {
-  //     console.log("Signup successful");
-  //     navigate("/verify-otp", { state: { email } }); 
-  //   },
-  //   onError: (err) => {
-  //     // Type assertion to treat err as an Error object
-  //     console.error("Error during signup:", (err as Error).message);
-  //   },
-  // });
  const { trigger: handleSignup, isLoading, data, error } = useFetcher({
     queryFn: async () => {
       try {
