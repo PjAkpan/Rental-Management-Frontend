@@ -5,6 +5,7 @@ import axios from "axios";
 import { useFetcher } from "netwrap";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
+import { ErrorResponse } from "../types";
 
 let deviceId = localStorage.getItem("deviceId");
 if (!deviceId) {
@@ -22,26 +23,53 @@ const Signup = () => {
   const navigate = useNavigate();
 
 
-  interface SignupResponse {
-    message: string;
-  }
-  
-  interface SignupError {
-    message: string;
-  }
 
-  const {
-    trigger: handleSignup,
-    isLoading,
-    data,
-    error,
-  } = useFetcher({
+  // const {
+  //   trigger: handleSignup,
+  //   isLoading,
+  //   data,
+  //   error,
+  // } = useFetcher({
+  //   queryFn: async () => {
+  //     try {
+  //       const response = await axios.post(
+  //         "http://127.0.0.1:5000/api/users/add",
+  //         {
+  //           email,
+  //           fullName,
+  //           password,
+  //           password2,
+  //           roomNumber,
+  //           phoneNumber,
+  //           deviceId,
+  //         },
+  //         {
+  //           headers: { "Content-Type": "application/json" },
+  //         }
+  //       );
+  //       return response.data; // Return response data if the request is successful
+  //     } catch (err) {
+  //       // Type assertion to tell TypeScript it's an Error object
+  //       const errorMessage = (err as any).response.data.message || "Signup failed";
+  //       throw new Error(errorMessage); // Throw error for `onError` to handle
+  //     }
+  //   },
+  //   onSuccess: () => {
+  //     console.log("Signup successful");
+  //     navigate("/verify-otp", { state: { email } }); 
+  //   },
+  //   onError: (err) => {
+  //     // Type assertion to treat err as an Error object
+  //     console.error("Error during signup:", (err as Error).message);
+  //   },
+  // });
+ const { trigger: handleSignup, isLoading, data, error } = useFetcher({
     queryFn: async () => {
       try {
         const response = await axios.post(
           "http://127.0.0.1:5000/api/users/add",
           {
-            email,
+              email,
             fullName,
             password,
             password2,
@@ -53,23 +81,21 @@ const Signup = () => {
             headers: { "Content-Type": "application/json" },
           }
         );
-        return response.data; // Return response data if the request is successful
+        return response.data; // Return the response data
       } catch (err) {
-        // Type assertion to tell TypeScript it's an Error object
-        const errorMessage = (err as Error).message || "Signup failed";
-        throw new Error(errorMessage); // Throw error for `onError` to handle
+        const errorMessage =
+          (err as ErrorResponse).response?.data?.message || "Signup failed";
+        throw new Error(errorMessage);
       }
     },
     onSuccess: () => {
       console.log("Signup successful");
-      navigate("/verify-otp", { state: { email } }); 
+      navigate("/verify-otp", { state: { email: email } });
     },
     onError: (err) => {
-      // Type assertion to treat err as an Error object
       console.error("Error during signup:", (err as Error).message);
     },
   });
-
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
@@ -229,6 +255,8 @@ const Signup = () => {
                   Privacy Policy
                 </a>.
               </div>
+               {error && <p className="text-red-500 mt-4">{(error as  ErrorResponse).message}</p>}
+                {data && <p className="text-green-500 mt-4">Signup successful!</p>}
               <button
                 type="submit"
                 className={`bg-blue-500 text-white py-2 px-6 rounded-full shadow-md focus:outline-none ${
@@ -237,9 +265,9 @@ const Signup = () => {
                 disabled={isLoading}
               >
                 {isLoading ? "Signing Up..." : "Sign Up"}
-                {error && <p className="text-red-500 mt-4">{(error as  SignupError).message}</p>}
-                {data && <p className="text-green-500 mt-4">Signup successful!</p>}
+               
               </button>
+              
             </div>
           </form>
         </div>
