@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from "react";
 import axios from "axios";
-import { useFetcher } from "netwrap";
+import { logger, useFetcher } from "netwrap";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 
@@ -53,6 +53,7 @@ const Signup = () => {
             headers: { "Content-Type": "application/json" },
           }
         );
+        (logger(response))
         return response.data; // Return response data if the request is successful
       } catch (err) {
         // Type assertion to tell TypeScript it's an Error object
